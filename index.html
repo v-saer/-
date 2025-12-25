@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធបង្កើតលិខិតសុំច្បាប់</title>
+    <link rel="website icon" type="png"
+     href="/images/IMG_4640.PNG">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Siemreap&family=Khmer+OS+Muol+Light&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Khmer OS Siemreap', sans-serif; background-color: #f0f2f5; padding: 10px; margin: 0; }
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { font-family: 'Khmer OS Muol Light'; text-align: center; color: #1a73e8; font-size: 1.2rem; }
+        .school-display { text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .grid-inputs { grid-template-columns: 1fr; } }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 0.9rem; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: 'Khmer OS Siemreap'; font-size: 14px; }
+        .button-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 25px 0; }
+        button { flex: 1; min-width: 140px; padding: 12px; cursor: pointer; border: none; border-radius: 6px; color: white; font-family: 'Khmer OS Siemreap'; transition: 0.3s; font-weight: bold; }
+        .btn-pdf { background-color: #d32f2f; }
+        .btn-img { background-color: #2e7d32; }
+        .btn-preview { background-color: #1976d2; }
+        .btn-word { background-color: #2b579a; }
+        #letter-preview-container { overflow-x: auto; background: #fff; border: 1px solid #ccc; margin-top: 20px; }
+        #letter-preview { width: 210mm; min-height: 297mm; padding: 80px; line-height: 1.8; color: #000; box-sizing: border-box; margin: auto; }
+        .header-letter { text-align: center; font-family: 'Khmer OS Muol Light'; font-size: 18px; line-height: 2; }
+        .date-right { text-align: right; margin-top: 30px; }
+        .signature-section { display: flex; justify-content: space-between; margin-top: 50px; text-align: center; }
+        .footer-credit { text-align: center; margin-top: 40px; font-size: 0.8rem; border-top: 1px solid #eee; padding-top: 15px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>បង្កើតលិខិតសុំអនុញ្ញាតច្បាប់</h2>
+    <p class="school-display" id="main-title">សូមបំពេញព័ត៌មានខាងក្រោម</p>
+    <hr>
+    
+    <div class="input-group">
+        <label>ជ្រើសរើសសាលារបស់អ្នក</label>
+        <select id="schoolSelect" onchange="toggleSchoolInput()">
+            <option value="វិទ្យាល័យប៊ុនរ៉ានី ហ៊ុនសែន ចាន់ថ្នាល">វិទ្យាល័យប៊ុនរ៉ានី ហ៊ុនសែន ចាន់ថ្នាល</option>
+            <option value="អនុវិទ្យាល័យបន្ទាយខ្មែរ">អនុវិទ្យាល័យបន្ទាយខ្មែរ</option>
+            <option value="បឋមសិក្សាបន្ទាយខ្មែរ">បឋមសិក្សាបន្ទាយខ្មែរ</option>
+            <option value="other">ផ្សេងៗ (វាយបញ្ចូលខ្លួនឯង)</option>
+        </select>
+        <input type="text" id="customSchool" class="hidden" placeholder="វាយបញ្ចូលឈ្មោះសាលារបស់អ្នកនៅទីនេះ" style="margin-top:10px;">
+    </div>
+
+    <div class="grid-inputs">
+        <div class="input-group">
+            <label>ឈ្មោះសិស្ស</label>
+            <input type="text" id="name" placeholder="ឧទាហរណ៍៖ សុខ ពិសី">
+        </div>
+        <div class="input-group">
+            <label>ភេទ</label>
+            <select id="gender">
+                <option value="ប្រុស">ប្រុស</option>
+                <option value="ស្រី">ស្រី</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="grid-inputs">
+        <div class="input-group">
+            <label>កម្រិតថ្នាក់</label>
+            <input type="text" id="grade" placeholder="ឧទាហរណ៍៖ ១២A">
+        </div>
+        <div class="input-group">
+            <label>ឈប់សម្រាកចំនួន (ថ្ងៃ)</label>
+            <input type="text" id="duration" placeholder="ឧទាហរណ៍៖ ០២ ថ្ងៃ">
+        </div>
+    </div>
+
+    <div class="grid-inputs">
+        <div class="input-group">
+            <label>ចាប់ពីថ្ងៃទី</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="input-group">
+            <label>ដល់ថ្ងៃទី</label>
+            <input type="date" id="endDate">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>មូលហេតុ</label>
+        <textarea id="reason" rows="2" placeholder="ឧទាហរណ៍៖ មានធុរៈផ្ទាល់ខ្លួនក្នុងគ្រួសារ"></textarea>
+    </div>
+
+    <div class="input-group">
+        <label>ឈ្មោះប្រធានថ្នាក់</label>
+        <input type="text" id="monitorName" placeholder="ឧទាហរណ៍៖ សុខ ជា">
+    </div>
+
+    <div class="button-group">
+        <button class="btn-preview" onclick="generateLetter()">មើលគំរូលិខិត</button>
+        <button class="btn-img" onclick="downloadImage()">រក្សាទុកជារូបថត</button>
+        <button class="btn-word" onclick="downloadWord()">ទាញយកជា Word</button>
+    </div>
+
+    <div id="letter-preview-container">
+        <div id="letter-preview">
+            <div id="word-header-content">
+                <div class="header-letter">
+                    ព្រះរាជាណាចក្រកម្ពុជា<br>
+                    ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
+
+                        លិខិតសុំច្បាប់
+                </div>
+                <div class="date-right">
+                    ធ្វើនៅ <span id="view-school-top">............</span><br>
+                    ថ្ងៃទី <span id="current-date">......</span> ខែ <span id="current-month">......</span> ឆ្នាំ <span id="current-year">២០២...</span>
+                </div>
+                <div style="margin-top: 30px; font-size: 16px;">
+                    <strong>សូមគោរពជូន៖ លោកគ្រូ/អ្នកគ្រូ បន្ទុកថ្នាក់ <span id="view-grade">......</span></strong><br>
+                    <strong>កម្មវត្ថុ៖</strong> សំណើសុំច្បាប់ឈប់សម្រាករយៈពេល <span id="view-duration">......</span> ថ្ងៃ <br><br>
+                    សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ ខ្ញុំបាទ/នាងខ្ញុំឈ្មោះ <span id="view-name" style="font-family: 'Khmer OS Muol Light';">............</span> ភេទ <span id="view-gender">......</span> ជាសិស្សថ្នាក់ទី <span id="view-grade2">......</span> នៃ<span id="view-school-body">............</span>។
+                    ដោយមូលហេតុ <span id="view-reason">........................................................................</span>។<br><br>
+                    អាស្រ័យហេតុនេះ សូមលោកគ្រូ/អ្នកគ្រូ មេត្តាអនុញ្ញាតច្បាប់ឱ្យខ្ញុំបាទ/នាងខ្ញុំ បានឈប់សម្រាកដោយអនុគ្រោះ ចាប់ពីថ្ងៃទី <span id="view-date-range">..................</span> ដោយសេចក្តីអនុគ្រោះ។
+                    <br><br>
+                    សូមលោកគ្រូ/អ្នកគ្រូ ទទួលនូវសេចក្តីគោរពដ៏ខ្ពង់ខ្ពស់ពីខ្ញុំ។
+                </div>
+            </div>
+
+            <div class="signature-section" id="web-signature">
+                <div>
+                    បានឃើញ និងអនុញ្ញាត<br>
+                    <strong>ប្រធានថ្នាក់</strong><br><br><br><br>
+                    <span id="view-monitor">........................</span>
+                </div>
+                <div>
+                    ដោយសេចក្តីគោរព<br>
+                    <strong>ហត្ថលេខាសិស្ស</strong><br><br><br><br>
+                    <span id="view-name2">........................</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-credit">
+        បង្កើតដោយ ៖ <a href="https://t.me/nhsalnghahh" target="_blank">កូនខ្មែរសាលថ្នាក់ទី១២E CTS</a>
+    </div>
+</div>
+
+<script>
+    function toggleSchoolInput() {
+        const select = document.getElementById('schoolSelect');
+        const customInput = document.getElementById('customSchool');
+        if (select.value === 'other') {
+            customInput.classList.remove('hidden');
+        } else {
+            customInput.classList.add('hidden');
+        }
+    }
+
+    function getSchoolName() {
+        const select = document.getElementById('schoolSelect');
+        const customInput = document.getElementById('customSchool');
+        return select.value === 'other' ? customInput.value : select.value;
+    }
+
+    function generateLetter() {
+        const schoolName = getSchoolName() || '............';
+        document.getElementById('view-school-top').innerText = schoolName;
+        document.getElementById('view-school-body').innerText = schoolName;
+
+        const nameValue = document.getElementById('name').value || '............';
+        document.getElementById('view-name').innerText = nameValue;
+        document.getElementById('view-name2').innerText = nameValue;
+        document.getElementById('view-gender').innerText = document.getElementById('gender').value;
+        const gradeValue = document.getElementById('grade').value || '......';
+        document.getElementById('view-grade').innerText = gradeValue;
+        document.getElementById('view-grade2').innerText = gradeValue;
+        document.getElementById('view-duration').innerText = document.getElementById('duration').value || '...... ';
+        document.getElementById('view-reason').innerText = document.getElementById('reason').value || '..................';
+        document.getElementById('view-monitor').innerText = document.getElementById('monitorName').value || '..................';
+
+        const now = new Date();
+        document.getElementById('current-date').innerText = now.getDate();
+        document.getElementById('current-month').innerText = now.getMonth() + 1;
+        document.getElementById('current-year').innerText = now.getFullYear();
+
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        document.getElementById('view-date-range').innerText = (start && end) ? `${start} ដល់ថ្ងៃទី ${end}` : "..................";
+        
+        document.getElementById('letter-preview-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function downloadImage() {
+        const element = document.getElementById('letter-preview');
+        html2canvas(element, { scale: 3 }).then(canvas => {
+            let link = document.createElement('a');
+            link.download = 'លិខិតសុំច្បាប់.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
+
+    function downloadWord() {
+        const headerText = document.getElementById('word-header-content').innerHTML;
+        const monitor = document.getElementById('view-monitor').innerText;
+        const student = document.getElementById('view-name2').innerText;
+
+        const signatureTable = `
+            <table style="width:100%; margin-top:50px; border:none; border-collapse:collapse; font-family:'Khmer OS Siemreap';">
+                <tr>
+                    <td style="width:50%; text-align:center; vertical-align:top;">
+                        បានឃើញ និងអនុញ្ញាត<br>
+                        <strong>ប្រធានថ្នាក់</strong><br><br><br><br>
+                        ${monitor}
+                    </td>
+                    <td style="width:50%; text-align:center; vertical-align:top;">
+                        ដោយសេចក្តីគោរព<br>
+                        <strong>ហត្ថលេខាសិស្ស</strong><br><br><br><br>
+                        ${student}
+                    </td>
+                </tr>
+            </table>
+        `;
+
+        const fullHTML = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset='utf-8'>
+                <style>
+                    body { font-family: 'Khmer OS Siemreap', 'Siemreap', sans-serif; line-height: 1.6; }
+                    .header-letter { text-align: center; font-weight: bold; font-size: 14pt; }
+                    .date-right { text-align: right; margin-top: 20px; }
+                </style>
+            </head>
+            <body>
+                ${headerText}
+                ${signatureTable}
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob(['\ufeff', fullHTML], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'លិខិតសុំច្បាប់.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
