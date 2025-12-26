@@ -4,14 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ប្រព័ន្ធបង្កើតលិខិតសុំច្បាប់</title>
-    <link rel="website icon" type="png"
-     href="/images/IMG_4640.PNG">
+    <link rel="website icon" type="png" href="/images/IMG_4640.PNG">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Siemreap&family=Khmer+OS+Muol+Light&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- Uiverse.io by Vazafirst Loading CSS --- */
+        #page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff; /* Background color of loader screen */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        #h3 {
+            color: rgb(82, 79, 79);
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+        #ring {
+            width: 190px;
+            height: 190px;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            position: absolute;
+        }
+        #ring:nth-child(1) {
+            border-bottom: 8px solid rgb(240, 42, 230);
+            animation: rotate1 2s linear infinite;
+        }
+        @keyframes rotate1 {
+            from { transform: rotateX(50deg) rotateZ(110deg); }
+            to { transform: rotateX(50deg) rotateZ(470deg); }
+        }
+        #ring:nth-child(2) {
+            border-bottom: 8px solid rgb(240, 19, 67);
+            animation: rotate2 2s linear infinite;
+        }
+        @keyframes rotate2 {
+            from { transform: rotateX(20deg) rotateY(50deg) rotateZ(20deg); }
+            to { transform: rotateX(20deg) rotateY(50deg) rotateZ(380deg); }
+        }
+        #ring:nth-child(3) {
+            border-bottom: 8px solid rgb(3, 170, 170);
+            animation: rotate3 2s linear infinite;
+        }
+        @keyframes rotate3 {
+            from { transform: rotateX(40deg) rotateY(130deg) rotateZ(450deg); }
+            to { transform: rotateX(40deg) rotateY(130deg) rotateZ(90deg); }
+        }
+        #ring:nth-child(4) {
+            border-bottom: 8px solid rgb(207, 135, 1);
+            animation: rotate4 2s linear infinite;
+        }
+        @keyframes rotate4 {
+            from { transform: rotateX(70deg) rotateZ(270deg); }
+            to { transform: rotateX(70deg) rotateZ(630deg); }
+        }
+
+        /* --- Main Application Styles --- */
         body { font-family: 'Khmer OS Siemreap', sans-serif; background-color: #f0f2f5; padding: 10px; margin: 0; }
-        .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container-app { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h2 { font-family: 'Khmer OS Muol Light'; text-align: center; color: #1a73e8; font-size: 1.2rem; }
         .school-display { text-align: center; margin-bottom: 20px; font-weight: bold; color: #555; }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -26,19 +93,36 @@
         .btn-preview { background-color: #1976d2; }
         .btn-word { background-color: #2b579a; }
         #letter-preview-container { overflow-x: auto; background: #fff; border: 1px solid #ccc; margin-top: 20px; }
-        #letter-preview { width: 210mm; min-height: 297mm; padding: 80px; line-height: 1.8; color: #000; box-sizing: border-box; margin: auto; }
+        #letter-preview { width: 210mm; min-height: 297mm; padding: 80px; line-height: 1.8; color: #000; box-sizing: border-box; margin: auto; background: white; }
         .header-letter { text-align: center; font-family: 'Khmer OS Muol Light'; font-size: 18px; line-height: 2; }
         .date-right { text-align: right; margin-top: 30px; }
         .signature-section { display: flex; justify-content: space-between; margin-top: 50px; text-align: center; }
         .footer-credit { text-align: center; margin-top: 40px; font-size: 0.8rem; border-top: 1px solid #eee; padding-top: 15px; }
         .hidden { display: none; }
+        
+        @media print {
+            .container-app > *:not(#letter-preview-container), .button-group, #page { display: none; }
+            body { background: white; }
+            .container-app { box-shadow: none; margin: 0; }
+            #letter-preview-container { border: none; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="page">
+    <div id="container">
+        <div id="ring"></div>
+        <div id="ring"></div>
+        <div id="ring"></div>
+        <div id="ring"></div>
+        <div id="h3">កំពុងដំណើរការ...</div>
+    </div>
+</div>
+
+<div class="container-app">
     <h2>បង្កើតលិខិតសុំអនុញ្ញាតច្បាប់</h2>
-    <p class="school-display" id="main-title">សូមបំពេញព័ត៌មានខាងក្រោម</p>
+    <p class="school-display">សូមបំពេញព័ត៌មានខាងក្រោម</p>
     <hr>
     
     <div class="input-group">
@@ -110,8 +194,7 @@
                 <div class="header-letter">
                     ព្រះរាជាណាចក្រកម្ពុជា<br>
                     ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
-
-                        លិខិតសុំច្បាប់
+                    <span style="font-size: 20px; display: block; margin-top: 10px;">លិខិតសុំច្បាប់</span>
                 </div>
                 
                 <div style="margin-top: 30px; font-size: 16px;">
@@ -119,10 +202,15 @@
                     <strong>កម្មវត្ថុ៖</strong> សំណើសុំច្បាប់ឈប់សម្រាករយៈពេល <span id="view-duration">......</span> ថ្ងៃ <br><br>
                     សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ ខ្ញុំបាទ/នាងខ្ញុំឈ្មោះ <span id="view-name" style="font-family: 'Khmer OS Muol Light';">............</span> ភេទ <span id="view-gender">......</span> ជាសិស្សថ្នាក់ទី <span id="view-grade2">......</span> នៃ<span id="view-school-body">............</span>។
                     ដោយមូលហេតុ <span id="view-reason">........................................................................</span>។<br><br>
-                    អាស្រ័យហេតុនេះ សូមលោកគ្រូ/អ្នកគ្រូ មេត្តាអនុញ្ញាតច្បាប់ឱ្យខ្ញុំបាទ/នាងខ្ញុំ បានឈប់សម្រាកដោយអនុគ្រោះ ចាប់ពីថ្ងៃទី <span id="view-date-range">..................</span> ដោយសេចក្តីអនុគ្រោះ។
+                    អាស្រ័យហេតុនេះ សូមលោកគ្រូ/អ្នកគ្រូ មេត្តាអនុញ្ញាតច្បាប់ឱ្យខ្ញុំបាទ/នាងខ្ញុំ បានឈប់សម្រាកដោយអនុគ្រោះ ចាប់ពីថ្ងៃទី <span id="view-date-range">..................</span> ។
                     <br><br>
                     សូមលោកគ្រូ/អ្នកគ្រូ ទទួលនូវសេចក្តីគោរពដ៏ខ្ពង់ខ្ពស់ពីខ្ញុំ។
                 </div>
+            </div>
+
+            <div class="date-right">
+                    ធ្វើនៅ <span id="view-school-top">............</span><br>
+                    ថ្ងៃទី <span id="current-date">......</span> ខែ <span id="current-month">......</span> ឆ្នាំ <span id="current-year">២០២...</span>
             </div>
 
             <div class="signature-section" id="web-signature">
@@ -136,14 +224,8 @@
                     <strong>ហត្ថលេខាសិស្ស</strong><br><br><br><br>
                     <span id="view-name2">........................</span>
                 </div>
-                
             </div>
-            <div class="date-right">
-                    ធ្វើនៅ <span id="view-school-top">............</span><br>
-                    ថ្ងៃទី <span id="current-date">......</span> ខែ <span id="current-month">......</span> ឆ្នាំ <span id="current-year">២០២...</span>
-                </div>
         </div>
-        
     </div>
 
     <div class="footer-credit">
@@ -152,6 +234,14 @@
 </div>
 
 <script>
+    // Hide loading screen after page fully loads
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('page');
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 2000); // Small delay for smoothness
+    });
+
     function toggleSchoolInput() {
         const select = document.getElementById('schoolSelect');
         const customInput = document.getElementById('customSchool');
@@ -196,6 +286,18 @@
         document.getElementById('letter-preview-container').scrollIntoView({ behavior: 'smooth' });
     }
 
+    function downloadPDF() {
+        const element = document.getElementById('letter-preview');
+        const opt = {
+            margin:       0,
+            filename:     'លិខិតសុំច្បាប់.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
     function downloadImage() {
         const element = document.getElementById('letter-preview');
         html2canvas(element, { scale: 3 }).then(canvas => {
@@ -210,49 +312,31 @@
         const headerText = document.getElementById('word-header-content').innerHTML;
         const monitor = document.getElementById('view-monitor').innerText;
         const student = document.getElementById('view-name2').innerText;
-
-        const signatureTable = `
-            <table style="width:100%; margin-top:50px; border:none; border-collapse:collapse; font-family:'Khmer OS Siemreap';">
-                <tr>
-                    <td style="width:50%; text-align:center; vertical-align:top;">
-                        បានឃើញ និងអនុញ្ញាត<br>
-                        <strong>ប្រធានថ្នាក់</strong><br><br><br><br>
-                        ${monitor}
-                    </td>
-                    <td style="width:50%; text-align:center; vertical-align:top;">
-                        ដោយសេចក្តីគោរព<br>
-                        <strong>ហត្ថលេខាសិស្ស</strong><br><br><br><br>
-                        ${student}
-                    </td>
-                </tr>
-            </table>
-        `;
+        const dateSection = document.querySelector('.date-right').innerHTML;
 
         const fullHTML = `
             <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head>
-                <meta charset='utf-8'>
-                <style>
-                    body { font-family: 'Khmer OS Siemreap', 'Siemreap', sans-serif; line-height: 1.6; }
-                    .header-letter { text-align: center; font-weight: bold; font-size: 14pt; }
-                    .date-right { text-align: right; margin-top: 20px; }
-                </style>
-            </head>
+            <head><meta charset='utf-8'><style>
+                body { font-family: 'Khmer OS Siemreap'; line-height: 1.6; }
+                .header-letter { text-align: center; font-weight: bold; }
+            </style></head>
             <body>
                 ${headerText}
-                ${signatureTable}
-            </body>
-            </html>
-        `;
+                <div style="text-align:right; margin-top:20px;">${dateSection}</div>
+                <table style="width:100%; margin-top:50px;">
+                    <tr>
+                        <td align="center">បានឃើញ និងអនុញ្ញាត<br><b>ប្រធានថ្នាក់</b><br><br><br>${monitor}</td>
+                        <td align="center">ដោយសេចក្តីគោរព<br><b>ហត្ថលេខាសិស្ស</b><br><br><br>${student}</td>
+                    </tr>
+                </table>
+            </body></html>`;
 
         const blob = new Blob(['\ufeff', fullHTML], { type: 'application/msword' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = 'លិខិតសុំច្បាប់.doc';
-        document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
     }
 </script>
 
